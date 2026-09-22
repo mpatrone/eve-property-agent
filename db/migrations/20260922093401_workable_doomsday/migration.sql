@@ -1,0 +1,1 @@
+ALTER TABLE "properties" ALTER COLUMN "sold_by_agent_id" DROP NOT NULL;

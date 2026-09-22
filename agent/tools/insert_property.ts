@@ -1,9 +1,13 @@
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
 import { defineTool } from "eve/tools";
 import { z } from "zod";
-import { db } from "../../db/index.js";
+import { db } from "../../db/index.ts";
+import { agents, properties } from "../../db/schema.ts";
+
 import { eq } from "drizzle-orm";
-import { agents, properties } from "../../db/schema.js";
 import { always } from "eve/tools/approval";
+import { sl } from "zod/locales";
 
 export default defineTool({
   description:
@@ -27,6 +31,9 @@ export default defineTool({
     description: z.string().optional(),
   }),
   async execute(propertyDetails, ctx) {
+    console.log("context.session follows:\n")
+    console.log(JSON.stringify(ctx.session, null, 2))
+    
     const slackId = ctx.session.auth.current?.attributes?.user_id as
       | string
       | undefined;
@@ -34,23 +41,23 @@ export default defineTool({
     if (!slackId) {
       throw new Error("Could not get slack id from current session");
     }
-
+    
     const agent = await db.query.agents.findFirst({
-      where: eq(agents.slackUserId, slackId),
+      where: {
+        slackUserId: slackId
+      }
     });
-
     if (!agent) {
       throw new Error(`No user found with slack id: ${slackId}`);
     }
+    console.log(JSON.stringify(agent, null, 2))  ;
 
-    const [property] = await db
-      .insert(properties)
-      .values({
+    const [property] = await db.insert(properties).values({
         ...propertyDetails,
-        listingAgentId: agent.id,
-      })
-      .returning();
-
+        listingAgentId: agent.id   
+    }).returning();
+    console.log("Property inserted")
+    console.log(JSON.stringify(property, null, 2))
     return {
       ...property,
       listedAt: property.listedAt?.toISOString() ?? null,

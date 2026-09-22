@@ -15,17 +15,18 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.1.0",
+    "@neondatabase/serverless": "^0.8.1",
     "@vercel/connect": "^1.0.0",
     "ai": "^7.0.93",
-    "dotenv": "^17.4.2",
-    "drizzle-orm": "^0.45.2",
+    "dotenv": "^18.0.1",
+    "drizzle-orm": "^1.0.0-rc.4",
     "eve": "^0.54.0",
     "zod": "4.5.4"
   },
   "devDependencies": {
+    "@types/bun": "latest",
     "@types/node": "24.x",
-    "drizzle-kit": "^0.31.10",
+    "drizzle-kit": "^1.0.0-rc.4",
     "microsandbox": "^0.5.10",
     "tsx": "^4.23.13",
     "typescript": "7.0.2"
@@ -33,9 +34,5 @@
   "engines": {
     "node": "24.x"
   },
-  "allowScripts": {
-    "esbuild@0.18.20": true,
-    "esbuild@0.25.12": true,
-    "esbuild@0.28.2": true
-  }
+  "private": true
 }
