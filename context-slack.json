@@ -1,0 +1,36 @@
+{
+    "id": "wrun_41M348YMJK0GJ6YKMHHFA07KSY",
+    "auth": {
+        "current": {
+            "attributes": {
+                "author_type": "user",
+                "channel_id": "D0C1HSXK50S",
+                "thread_ts": "1790071229.230429",
+                "user_id": "U0C1F092D41",
+                "user_name": "po75558",
+                "team_id": "T0C27CUCK2L"
+            },
+            "authenticator": "slack-webhook",
+            "issuer": "slack:T0C27CUCK2L",
+            "principalId": "slack:T0C27CUCK2L:U0C1F092D41",
+            "principalType": "user"
+        },
+        "initiator": {
+            "attributes": {
+                "author_type": "user",
+                "channel_id": "D0C1HSXK50S",
+                "thread_ts": "1790071229.230429",
+                "user_id": "U0C1F092D41",
+                "team_id": "T0C27CUCK2L"
+            },
+            "authenticator": "slack-webhook",
+            "issuer": "slack:T0C27CUCK2L",
+            "principalId": "slack:T0C27CUCK2L:U0C1F092D41",
+            "principalType": "user"
+        }
+    },
+    "turn": {
+        "id": "turn_10",
+        "sequence": 10
+    }
+}

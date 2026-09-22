@@ -31,33 +31,44 @@ export default defineTool({
     description: z.string().optional(),
   }),
   async execute(propertyDetails, ctx) {
-    console.log("context.session follows:\n")
-    console.log(JSON.stringify(ctx.session, null, 2))
-    
-    const slackId = ctx.session.auth.current?.attributes?.user_id as
-      | string
-      | undefined;
 
-    if (!slackId) {
-      throw new Error("Could not get slack id from current session");
-    }
-    
-    const agent = await db.query.agents.findFirst({
-      where: {
-        slackUserId: slackId
+    const authenticator = ctx.session.auth.current?.authenticator as string | undefined;
+    let agentId: number = 0;
+    if (authenticator === "slack-webhook") {
+      // we are comming from a slack channel. Check userid in agents table
+      const slackId = ctx.session.auth.current?.attributes?.user_id as string | undefined;
+      if (!slackId) {
+        throw new Error("Could not get slack id from current session");
       }
-    });
-    if (!agent) {
-      throw new Error(`No user found with slack id: ${slackId}`);
+      const agent = await db.query.agents.findFirst({
+        where: {
+          slackUserId: slackId
+        }
+      });
+      if (!agent) {
+        throw new Error(`No user found with slack id: ${slackId}`);
+      }
+      agentId = agent.id;
     }
-    console.log(JSON.stringify(agent, null, 2))  ;
+    else if (authenticator === "oidc") {
+      const issuer = ctx.session.auth.current?.issuer as string | undefined;
+      if (!issuer ) {
+        throw new Error("oidc incoming channel with no valid issuer");
+      }
+      if ( issuer !== "https://oidc.vercel.com/po75558-5820s-projects") {
+        throw new Error(`oidc incoming channel with issuer ${issuer}`);
+      }
+    }
+    else {
+      console.log(ctx.session, null, 2)
+      throw new Error(`Unknown incoming channel`);
+    }
 
     const [property] = await db.insert(properties).values({
-        ...propertyDetails,
-        listingAgentId: agent.id   
+      ...propertyDetails,
+      listingAgentId: agentId
     }).returning();
-    console.log("Property inserted")
-    console.log(JSON.stringify(property, null, 2))
+
     return {
       ...property,
       listedAt: property.listedAt?.toISOString() ?? null,
