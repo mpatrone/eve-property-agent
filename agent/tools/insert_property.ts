@@ -52,12 +52,22 @@ export default defineTool({
     }
     else if (authenticator === "oidc") {
       const issuer = ctx.session.auth.current?.issuer as string | undefined;
-      if (!issuer ) {
-        throw new Error("oidc incoming channel with no valid issuer");
+      const user_id = ctx.session.auth.current?.attributes?.user_id as string | undefined;
+      if (!issuer || !user_id) {
+        throw new Error("oidc incoming channel with no valid issuer or userid");
       }
       if ( issuer !== "https://oidc.vercel.com/po75558-5820s-projects") {
         throw new Error(`oidc incoming channel with issuer ${issuer}`);
       }
+      const agent = await db.query.agents.findFirst({
+        where: {
+          slackUserId: user_id
+        }
+      });
+      if (!agent) {
+        throw new Error(`No user found with slack id: ${user_id}`);
+      }
+      agentId = agent.id;
     }
     else {
       console.log(ctx.session, null, 2)
