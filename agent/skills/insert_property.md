@@ -21,7 +21,7 @@ Collect every field the `insert_property` tool requires before doing anything el
 
 Ask follow-up questions until every required field is filled in and you are confident
 you have understood the user's intent correctly. Never invent values — if something is
-missing or ambiguous, ask.
+missing or ambiguous, ask. If no description is provided for the proprety, generate one by using the `generate_property_description` skill.
 
 ## 2. Show the collected data
 
